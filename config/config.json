@@ -1,3 +1,4 @@
+
 {
   "development": {
     "username": "root",
@@ -19,7 +20,6 @@
     "database": "sql10712045",
     "host": "sql10.freemysqlhosting.net",
     "port": 3306,
-    "dialect": "mysql",
-    "dialectModule": "mysql2"
+    "dialect": "mysql"
   }
 }
