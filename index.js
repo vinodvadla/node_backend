@@ -24,6 +24,7 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + path.extname(file.originalname));
   },
 });
+app.use(express.static('./uploads'));
 
 const upload = multer({ storage: storage });
 
@@ -36,11 +37,11 @@ app.post("/upload", upload.single("image"), (req, res) => {
       return res.status(500).send("Cloudinary upload failed");
     }
 
-    fs.unlink(filePath, (err) => {
-      if (err) {
-        console.error("Failed to delete file:", err);
-      }
-    });
+    // fs.unlink(filePath, (err) => {
+    //   if (err) {
+    //     console.error("Failed to delete file:", err);
+    //   }
+    // });
     res.json({ url: result.secure_url });
   });
 });
