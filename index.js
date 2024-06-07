@@ -1,18 +1,50 @@
 const express = require("express");
-const app = express();
-const router = express.Router();
-const { user } = require("./models");
+const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
+const fs = require("fs");
+const path = require("path");
 
-app.get("/", async (req, res, next) => {
-  try {
-    const users = await user.findAll();
-    res
-      .status(200)
-      .json({ success: true, message: "users fetched successfuklly", users });
-  } catch (error) {
-    console.log(error.message);
-  }
+// dotenv.config();
+
+const app = express();
+const port = 3000;
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: "dybup53nz",
+  api_key: "669895999757857",
+  api_secret: "mVMdtiCjlId5QWSaM3xf6aq8q28",
 });
-app.listen(4000, () => {
-  console.log("server running on 4000");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.post("/upload", upload.single("image"), (req, res) => {
+  const filePath = req.file.path;
+
+  cloudinary.uploader.upload(filePath, (error, result) => {
+    if (error) {
+      console.error("Cloudinary upload error:", error);
+      return res.status(500).send("Cloudinary upload failed");
+    }
+
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error("Failed to delete file:", err);
+      }
+    });
+    res.json({ url: result.secure_url });
+  });
+});
+
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });
