@@ -3,7 +3,7 @@ const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const fs = require("fs");
 const path = require("path");
-const { User } = require("./models");
+const { user } = require("./models");
 // dotenv.config();
 
 const app = express();
@@ -32,7 +32,7 @@ app.get("/", (req, res) => {
   res.status(200).json({ success: true, message: "Hello World" });
 });
 app.get("/users", async (req, res) => {
-  const users = await User.findAll();
+  const users = await user.findAll();
 
   res.status(200).json({ success: true, message: "users", users });
 });
