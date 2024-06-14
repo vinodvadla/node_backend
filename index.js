@@ -3,7 +3,7 @@ const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const fs = require("fs");
 const path = require("path");
-
+const { User } = require("./models");
 // dotenv.config();
 
 const app = express();
@@ -24,10 +24,15 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + path.extname(file.originalname));
   },
 });
-app.use(express.static('./uploads'));
+app.use(express.static("./uploads"));
 
 const upload = multer({ storage: storage });
 
+app.get("/", async (req, res) => {
+  const users = await User.findAll();
+
+  res.status(200).json({ success: true, message: "users", users });
+});
 app.post("/upload", upload.single("image"), (req, res) => {
   const filePath = req.file.path;
 
@@ -48,5 +53,5 @@ app.post("/upload", upload.single("image"), (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
-  console.log("this is main branch code")
+  console.log("this is main branch code");
 });
