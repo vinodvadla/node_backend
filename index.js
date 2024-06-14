@@ -28,11 +28,15 @@ app.use(express.static("./uploads"));
 
 const upload = multer({ storage: storage });
 
-app.get("/", async (req, res) => {
+app.get("/", (req, res) => {
+  res.status(200).json({ success: true, message: "Hello World" });
+});
+app.get("/users", async (req, res) => {
   const users = await User.findAll();
 
   res.status(200).json({ success: true, message: "users", users });
 });
+
 app.post("/upload", upload.single("image"), (req, res) => {
   const filePath = req.file.path;
 
